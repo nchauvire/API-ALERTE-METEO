@@ -15,6 +15,6 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 });
 
 
-$app->get('/alerte-meteo[/{departement}]', Src\Controllers\AlerteController::class.":getData");
+$app->get('/alerte-meteo[/{city}]', Src\Controllers\AlerteController::class.":getData");
 
 

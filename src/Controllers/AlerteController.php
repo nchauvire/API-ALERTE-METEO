@@ -10,10 +10,22 @@ class AlerteController {
 
     public function getData(Request $request, Response $response, array $args){
 
-        if (! $args['departement']) {
-            $args['departement'] = '44';
+        if (! $args['city']) {
+            $args['city'] = 'nantes';
         }
 
+        //convertion de la ville en departement
+        $client1 = new Client();
+        $res = $client1->request(
+            'GET',
+            "http://vicopo.selfbuild.fr/?city=".$args['city']
+        );
+
+        foreach (json_decode($res->getBody()->getContents())->cities as $city){
+            if(strtolower($city->city) == strtolower($args['city'])){
+                $depCode = substr($city->code,0,2);
+            }
+        }
         $client = new Client();
         $res = $client->request(
             'GET',
@@ -25,7 +37,7 @@ class AlerteController {
         // recherche du departement souhaite
         foreach ($result->PHENOMENE as $dep){
 
-            if($dep['departement'] == $args['departement']){
+            if($dep['departement'] == $depCode){
                 foreach($dep[0]->attributes() as $a => $b) {
                     $data[$a]= $b;
                 }
